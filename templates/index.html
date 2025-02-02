@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Poetry Generator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-lg">
+                    <h1 class="text-center mb-4 floating">✨ Poetry Generator ✨</h1>
+                    <form method="post" id="poemForm" class="mb-4">
+                        <div class="mb-3">
+                            <label for="prompt" class="form-label">Enter your first line:</label>
+                            <textarea class="form-control" id="prompt" name="prompt" rows="2" required>{{ request.form.get('prompt', '') }}</textarea>
+                        </div>
+                        <button type="submit" class="btn btn-generate w-100">Create Poetry</button>
+                    </form>
+                    {% if generated_text %}
+                    <div class="poem-container mt-4">
+                        <div class="d-flex justify-content-end mb-2">
+                            <button onclick="copyPoem()" class="btn btn-sm btn-outline-secondary">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                        </div>
+                        <div id="poemText">{{ generated_text }}</div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script>
+        // Clear form after submission
+        document.getElementById('poemForm').addEventListener('submit', function() {
+            setTimeout(() => {
+                this.reset();
+            }, 100);
+        });
+
+        // Copy poem function
+        function copyPoem() {
+            const poemText = document.getElementById('poemText').innerText;
+            navigator.clipboard.writeText(poemText).then(() => {
+                Toastify({
+                    text: "Poem copied to clipboard!",
+                    duration: 2000,
+                    gravity: "bottom",
+                    position: "right",
+                    style: {
+                        background: "linear-gradient(to right, #00b09b, #96c93d)",
+                    }
+                }).showToast();
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+Vagrant.configure("2") do |config|
+  # Use Ubuntu 20.04 LTS as the base box
+  config.vm.box = "ubuntu/focal64"
+
+  # Forward port if needed (optional)
+  # config.vm.network "forwarded_port", guest: 8000, host: 8000
+
+  # Sync the project folder with /vagrant inside the VM
+  config.vm.synced_folder ".", "/vagrant"
+
+  # Provisioning the VM
+  config.vm.provision "shell", inline: <<-SHELL
+    # Update package list and install python3, pip, and git
+    sudo apt-get update -y
+    sudo apt-get install -y python3 python3-pip git
+
+    # Upgrade pip
+    python3 -m pip install --upgrade pip
+
+    # Navigate to the shared folder and install Python dependencies
+    cd /vagrant
+    pip3 install -r requirements.txt
+  SHELL
+end
